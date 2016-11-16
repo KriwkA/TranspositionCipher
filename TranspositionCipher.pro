@@ -4,7 +4,11 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    cryptkey.cpp
+    cryptkey.cpp \
+    cryptograph.cpp \
+    file.cpp
 
 HEADERS += \
-    cryptkey.h
+    cryptkey.h \
+    cryptograph.h \
+    file.h
