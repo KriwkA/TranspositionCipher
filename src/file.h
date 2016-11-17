@@ -17,6 +17,7 @@ public:
 
     File();
     File(const char* filePath);
+    ~File();
 
     void setPath(const char* filePath);
 
@@ -33,7 +34,7 @@ public:
 
     inline bool isOpen() const { return (bool)m_pStream; }
 
-    ~File();
+
 
 private:
     void clearPath();
