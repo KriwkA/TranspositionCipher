@@ -27,7 +27,7 @@ public:
     void close();
 
     char readByte();
-    char readByte(long long pos);
+    char readByte(unsigned long long pos);
     void writeByte(char byte);
 
     long long getSize();
@@ -45,7 +45,7 @@ private:
 private:
     FILE* m_pStream;
     char* m_path;
-    long long m_size;
+    unsigned long long m_size;
 
 
 };

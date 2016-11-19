@@ -1,27 +1,26 @@
 #ifndef TRANSPOSITIONCIPHER_H
 #define TRANSPOSITIONCIPHER_H
 
-#include "cryptograph.h"
-
+#include "abstractcipher.h"
 
 class CryptKey;
 
-class TranspositionCipher : public Cryptograph
+class TranspositionCipher : public AbstractCipher
 {
 public:
+    TranspositionCipher();
+    virtual ~TranspositionCipher();
 
-
-    virtual void encrypt(const char *keyString, File *inFile, File *outFile);
-    virtual void decrypt(const char *keyString, File *inFile, File *outFile);
+    virtual void encrypt(const char *keyString, const char *inFilePath, const char* outFilePath);
+    virtual void decrypt(const char *keyString, const char *inFilePath, const char* outFilePath);
 
 private:
-    void prepareFiles(const char *keyString, File *inFile, File *outFile);
+    void openFiles(const char *keyString, const char *inFilePath, const char* outFilePath);
     void closeFiles();
 
     File* m_pInputFile;
     File* m_pOutputFile;
     CryptKey* m_pKey;
-
 
 };
 

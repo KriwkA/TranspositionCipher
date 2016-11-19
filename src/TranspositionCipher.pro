@@ -5,12 +5,12 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     cryptkey.cpp \
-    cryptograph.cpp \
     file.cpp \
-    transpositioncipher.cpp
+    transpositioncipher.cpp \
+    abstractcipher.cpp
 
 HEADERS += \
     cryptkey.h \
-    cryptograph.h \
     file.h \
-    transpositioncipher.h
+    transpositioncipher.h \
+    abstractcipher.h

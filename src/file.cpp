@@ -27,7 +27,7 @@ File::~File()
 void File::setPath(const char *filePath)
 {
     clearPath();
-    int length = strlen(filePath);
+    size_t length = strlen(filePath);
     m_path = (char*)calloc(length + 1, sizeof(char));
     strcpy(m_path, filePath);
 }
@@ -40,7 +40,7 @@ void File::clearPath()
 
 void File::open(File::OpenMode openMode)
 {
-    if(!m_path)
+    if(!(m_path && strlen(m_path)))
         throw std::exception("file path is empty");
 
     char openModeStr[5];
@@ -87,7 +87,7 @@ char File::readByte()
     return this->getch();
 }
 
-char File::readByte(long long pos)
+char File::readByte(unsigned long long pos)
 {
     if(!m_pStream || pos >= m_size || fseek(m_pStream, pos, SEEK_SET))
         throw std::exception("file read error");

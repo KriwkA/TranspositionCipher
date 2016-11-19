@@ -2,54 +2,76 @@
 
 #include "file.h"
 #include "cryptkey.h"
+#include <cstring>
 #include <exception>
 
 
-void TranspositionCipher::encrypt(const char *keyString, File *inFile, File *outFile)
+TranspositionCipher::TranspositionCipher()
+    : AbstractCipher()
+    , m_pKey(0)
 {
-    try
-    {
-        prepareFiles(keyString, inFilePath, outFilePath);
-    }
-    catch (const std::exception& e)
-    {
-
-    }
-
-    closeFiles();
 
 }
 
-void TranspositionCipher::decrypt(const char *keyString, File *inFilePath, File *outFile)
+TranspositionCipher::~TranspositionCipher()
 {
-    try
-    {
-        prepareFiles(keyString, inFilePath, outFilePath);
-    }
-    catch (const std::exception& e)
-    {
 
-    }
-
-    closeFiles();
 }
 
-void TranspositionCipher::prepareFiles(const char *keyString, File *inFilePath, File *outFile)
+void TranspositionCipher::encrypt(const char *keyString, const char *inFilePath, const char* outFilePath)
 {
-    m_pKey = new CryptKey(inputFile.getSize(), keyString);
+
+
+
+}
+
+void TranspositionCipher::decrypt(const char *keyString, const char *inFilePath, const char* outFilePath)
+{
+
+
+}
+
+void TranspositionCipher::openFiles(const char *keyString, const char *inFilePath, const char* outFilePath)
+{
+
     m_pInputFile = new File(inFilePath);
-    m_pOutputFile = new File(outFile);
+    m_pOutputFile = new File(outFilePath);
 
-    m_pInputFile->open(File::OpenMode::ReadOnly | File::OpenMode::Binary);
-    m_pOutputFile->open(File::OpenMode::ReadWrite | File::OpenMode::Binary);
+    try
+    {
+        int inFlag = (int)File::OpenMode::ReadOnly | (int)File::OpenMode::Binary;
+        int outFlag = (int)File::OpenMode::ReadWrite | (int)File::OpenMode::Binary;
+        m_pInputFile->open((File::OpenMode)inFlag);
+        m_pOutputFile->open((File::OpenMode)outFlag);
+        m_pKey = new CryptKey(m_pInputFile->getSize(), keyString);
+    }
+    catch(const std::exception& e)
+    {
+        char error[256] = "Open ";
+        strcat(error, (m_pInputFile->isOpen() ? "output" : "input"));
+        strcat(error, " file error: ");
+        strcat(error, e.what());
+
+        throw std::exception(error);
+    }
 }
 
 void TranspositionCipher::closeFiles()
 {
-    m_pInputFile->close();
-    m_pOutputFile->close();
+    if(m_pInputFile)
+    {
+        m_pInputFile->close();
+        delete m_pInputFile;
+    }
 
-    delete m_pOutputFile;
-    delete m_pInputFile;
-    delete m_pKey;
+    if(m_pOutputFile)
+    {
+        m_pOutputFile->close();
+        delete m_pOutputFile;
+    }
+
+    if(m_pKey)
+    {
+        delete m_pKey;
+    }
 }
