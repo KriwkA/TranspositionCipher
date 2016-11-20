@@ -42,6 +42,8 @@ CryptKey::~CryptKey()
 {
     free(m_pRowKey);
     free(m_pColKey);
+    free(m_pRowDecryptKey);
+    free(m_pColDecryptKey);
 }
 
 unsigned long long CryptKey::getEncryptedIndex(unsigned long long baseIndex) const
