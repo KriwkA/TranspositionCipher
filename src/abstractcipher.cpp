@@ -10,4 +10,3 @@ AbstractCipher::AbstractCipher()
 AbstractCipher::~AbstractCipher()
 {
 }
-

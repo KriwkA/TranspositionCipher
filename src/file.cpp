@@ -7,7 +7,7 @@
 
 File::File()
     : m_path(0)
-    , m_size(-1)
+    , m_size((uint64_t)-1)
     , m_pStream(0)
 {
 
@@ -76,7 +76,7 @@ void File::close()
     {
         fclose(m_pStream);
         m_pStream = 0;
-        m_size = -1;
+        m_size = (uint64_t)-1;
     }
 }
 
@@ -87,9 +87,9 @@ char File::readByte()
     return this->getch();
 }
 
-char File::readByte(unsigned long long pos)
+char File::readByte(uint64_t pos)
 {
-    if(!m_pStream || pos >= m_size || fseek(m_pStream, pos, SEEK_SET))
+    if(!m_pStream || pos >= m_size || _fseeki64(m_pStream, pos, SEEK_SET))
         throw std::exception("file read error");
     return this->getch();
 }
@@ -121,9 +121,9 @@ char File::getch()
     return letter;
 }
 
-long long File::getSize()
+uint64_t File::getSize()
 {
-    if(m_size == -1)
+    if(m_size == (uint64_t)-1)
         throw std::exception("file not opened");
     return m_size;
 }

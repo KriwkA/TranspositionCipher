@@ -2,6 +2,7 @@
 #define FILE_H
 
 #include <cstdio>
+#include <cstdint>
 
 class File
 {
@@ -27,10 +28,10 @@ public:
     void close();
 
     char readByte();
-    char readByte(unsigned long long pos);
+    char readByte(uint64_t pos);
     void writeByte(char byte);
 
-    long long getSize();
+    uint64_t getSize();
 
     inline bool isOpen() const { return (bool)m_pStream; }
 
@@ -45,7 +46,7 @@ private:
 private:
     FILE* m_pStream;
     char* m_path;
-    unsigned long long m_size;
+    uint64_t m_size;
 
 
 };
