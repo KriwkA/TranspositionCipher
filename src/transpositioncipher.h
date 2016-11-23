@@ -15,8 +15,15 @@ public:
     virtual void decrypt(const char *keyString, const char *inFilePath, const char* outFilePath);
 
 private:
-    void openFiles(const char *keyString, const char *inFilePath, const char* outFilePath);
+    void openFiles(const char *inFilePath, const char* outFilePath);
     void closeFiles();
+
+    enum class WorkType{ ENCRYPT, DECRYPT };
+
+    void work(WorkType type, const char *keyString, const char *inFilePath, const char* outFilePath);
+
+    void initKey(const char *keyString);
+    void freeKey();
 
     File* m_pInputFile;
     File* m_pOutputFile;

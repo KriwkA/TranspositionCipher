@@ -14,6 +14,7 @@ File::File()
 }
 
 File::File(const char *filePath)
+    : File()
 {
     setPath(filePath);
 }
@@ -34,8 +35,11 @@ void File::setPath(const char *filePath)
 
 void File::clearPath()
 {
-    free(m_path);
-    m_path = 0;
+    if(m_path)
+    {
+        free(m_path);
+        m_path = 0;
+    }
 }
 
 void File::open(File::OpenMode openMode)

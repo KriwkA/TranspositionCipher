@@ -19,13 +19,12 @@ public:
     uint64_t getBaseIndex(uint64_t encryptedIndex) const;
 
 private:
-
     static int generateSeed(const char* seedString);
 
     static uint64_t getIndex(uint64_t baseIndex,
-                                       uint64_t numberRow, uint64_t numberCol,
-                                       const uint64_t* rowArr,
-                                       const uint64_t* colArr);
+                             uint64_t numberRow, uint64_t numberCol,
+                             const uint64_t* rowArr,
+                             const uint64_t* colArr);
 
     void calculateKeyLength(uint64_t fileLength);
     void allocateKeys();

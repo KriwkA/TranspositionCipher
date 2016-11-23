@@ -33,9 +33,9 @@ int CryptKey::generateSeed(const char *seedString)
 }
 
 uint64_t CryptKey::getIndex(uint64_t baseIndex,
-                                      uint64_t numberRow, uint64_t numberCol,
-                                      const uint64_t *rowArr,
-                                      const uint64_t *colArr)
+                            uint64_t numberRow, uint64_t numberCol,
+                            const uint64_t *rowArr,
+                            const uint64_t *colArr)
 {
     uint64_t row = rowArr[baseIndex / numberRow];
     uint64_t col = colArr[baseIndex % numberCol];
@@ -44,7 +44,7 @@ uint64_t CryptKey::getIndex(uint64_t baseIndex,
 
 void CryptKey::calculateKeyLength(uint64_t fileLength)
 {
-   m_rowKeyLength = m_colKeyLength = (uint64_t)std::sqrt(fileLength);
+    m_rowKeyLength = m_colKeyLength = (uint64_t)std::sqrt(fileLength);
     if(m_rowKeyLength * m_colKeyLength < fileLength)
     {
         m_rowKeyLength++;
