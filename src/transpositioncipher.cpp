@@ -38,7 +38,6 @@ void TranspositionCipher::work(TranspositionCipher::WorkType type, const char *k
         m_pOutputFile->writeByte(byte);
     }
 
-
     freeKey();
     closeFiles();
 }
