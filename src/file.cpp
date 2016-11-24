@@ -108,12 +108,12 @@ void File::writeByte(char byte)
 void File::checkSize()
 {
     assert(m_pStream);
-    int currentPos = ftell(m_pStream);
+    uint64_t currentPos = _ftelli64(m_pStream);
 
-    if(!fseek(m_pStream, 0, SEEK_END))
+    if(!_fseeki64(m_pStream, 0, SEEK_END))
     {
-        m_size = ftell(m_pStream);
-        fseek(m_pStream, currentPos, SEEK_SET);
+        m_size = _ftelli64(m_pStream);
+        _fseeki64(m_pStream, currentPos, SEEK_SET);
     }
 }
 

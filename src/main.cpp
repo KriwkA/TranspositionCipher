@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
         std::cerr << e.what() << std::endl;
     }
 
-
     delete chiper;
     return 0;
 }
