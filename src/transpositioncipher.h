@@ -3,6 +3,8 @@
 
 #include "abstractcipher.h"
 
+#include <cstdint>
+
 class CryptKey;
 
 class TranspositionCipher : public AbstractCipher

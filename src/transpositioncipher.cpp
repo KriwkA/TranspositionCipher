@@ -23,6 +23,8 @@ void TranspositionCipher::work(TranspositionCipher::WorkType type, const char *k
     openFiles(inFilePath, outFilePath);
     initKey(keyString);
 
+    showKey();
+
     uint64_t index;
 
     uint64_t (CryptKey::*getIndexFunc)(uint64_t) const = NULL;
@@ -100,4 +102,19 @@ void TranspositionCipher::freeKey()
     {
         delete m_pKey;
     }
+}
+
+void TranspositionCipher::printKey(const uint64_t *key, uint64_t length)
+{
+    for(int i = 0; i < length; ++i)
+        printf("%d ", key[i]);
+    printf("\n");
+}
+
+void TranspositionCipher::showKey() const
+{
+    printKey(m_pKey->getRowKey(), m_pKey->getRowKeyLength());
+    printKey(m_pKey->getColKey(), m_pKey->getColKeyLength());
+    printKey(m_pKey->getRowDecryptKey(), m_pKey->getRowKeyLength());
+    printKey(m_pKey->getColDecryptKey(), m_pKey->getColKeyLength());
 }

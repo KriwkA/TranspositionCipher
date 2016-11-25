@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
+#include <random>
 
 CryptKey::CryptKey(uint64_t fileLength, const char *seedString)
 {
@@ -25,11 +26,6 @@ uint64_t CryptKey::getEncryptedIndex(uint64_t baseIndex) const
 uint64_t CryptKey::getBaseIndex(uint64_t encryptedIndex) const
 {
     return getIndex(encryptedIndex, m_rowKeyLength, m_colKeyLength, m_pRowDecryptKey, m_pColDecryptKey);
-}
-
-int CryptKey::generateSeed(const char *seedString)
-{
-    return (int)std::hash<const char*>().operator()(seedString);
 }
 
 uint64_t CryptKey::getIndex(uint64_t baseIndex,
@@ -81,14 +77,14 @@ void CryptKey::initKeys()
 
 void CryptKey::mixKeys(const char *seedString)
 {
-    int seed = generateSeed(seedString);
-    srand(seed);
+    std::seed_seq seed(seedString, seedString + strlen(seedString));
+    std::minstd_rand0 random(seed);
 
     for(uint64_t i = m_rowKeyLength - 1; i > 0; --i)
-        std::swap(m_pRowKey[i], m_pRowKey[rand() % i]);
+        std::swap(m_pRowKey[i], m_pRowKey[random() % (i + 1)]);
 
     for(uint64_t i = m_colKeyLength - 1; i > 0; --i)
-        std::swap(m_pColKey[i], m_pColKey[rand() % i]);
+        std::swap(m_pColKey[i], m_pColKey[random() % (i + 1)]);
 }
 
 void CryptKey::generateDecryptKeys()

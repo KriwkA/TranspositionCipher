@@ -11,6 +11,8 @@ public:
 
     inline const uint64_t* getRowKey() const { return m_pRowKey; }
     inline const uint64_t* getColKey() const { return m_pColKey; }
+    inline const uint64_t* getRowDecryptKey() const { return m_pRowDecryptKey; }
+    inline const uint64_t* getColDecryptKey() const { return m_pColDecryptKey; }
 
     inline uint64_t getRowKeyLength() const { return m_rowKeyLength; }
     inline uint64_t getColKeyLength() const { return m_colKeyLength; }
@@ -19,8 +21,6 @@ public:
     uint64_t getBaseIndex(uint64_t encryptedIndex) const;
 
 private:
-    static int generateSeed(const char* seedString);
-
     static uint64_t getIndex(uint64_t baseIndex,
                              uint64_t numberRow, uint64_t numberCol,
                              const uint64_t* rowArr,

@@ -54,7 +54,7 @@ void CryptKeyTestTest::test1()
 
 void CryptKeyTestTest::test2()
 {
-    QVERIFY(testKey(9, "Test2"));
+    QVERIFY(testKey(9, "asd"));
 }
 
 void CryptKeyTestTest::test3()
