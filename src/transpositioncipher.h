@@ -24,7 +24,7 @@ private:
 
     void work(WorkType type, const char *keyString, const char *inFilePath, const char* outFilePath);
 
-    void initKey(const char *keyString);
+    void initKey(const char *keyString, WorkType type);
     void freeKey();
 
     File* m_pInputFile;

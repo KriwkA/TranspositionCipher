@@ -106,6 +106,23 @@ void File::writeByte(char byte)
     fwrite(&byte, sizeof(char), 1, m_pStream);
 }
 
+int64_t File::readLongLong()
+{
+    if(!m_pStream)
+        throw std::exception("file read error");
+
+    int64_t n;
+    fread(&n, sizeof(int64_t), 1, m_pStream);
+    return n;
+}
+
+void File::writeLongLong(int64_t n)
+{
+    if(!m_pStream)
+        throw std::exception("file write error");
+    fwrite(&n, sizeof(int64_t), 1, m_pStream);
+}
+
 void File::checkSize()
 {
     assert(m_pStream);

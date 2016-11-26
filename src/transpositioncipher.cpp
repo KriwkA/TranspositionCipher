@@ -21,22 +21,28 @@ TranspositionCipher::~TranspositionCipher()
 void TranspositionCipher::work(TranspositionCipher::WorkType type, const char *keyString, const char *inFilePath, const char *outFilePath)
 {
     openFiles(inFilePath, outFilePath);
-    initKey(keyString);
+    initKey(keyString, type);
 
-    showKey();
+    uint64_t (CryptKey::*hasIndex)() const;
+    uint64_t (CryptKey::*nextIndex)();
+
+    hasIndex = (type == WorkType::ENCRYPT ? &CryptKey::hasNextEncryptIndex : &CryptKey::hasNextDecryptIndex);
+    nextIndex = (type == WorkType::ENCRYPT ? &CryptKey::nextEncryptIndex : &CryptKey::nextDecryptIndex);
 
     uint64_t index;
-
-    uint64_t (CryptKey::*getIndexFunc)(uint64_t) const = NULL;
-
-    getIndexFunc = (type == WorkType::ENCRYPT ? &CryptKey::getEncryptedIndex : &CryptKey::getBaseIndex);
-
     char byte;
 
-    for(uint64_t i = 0; i < m_pInputFile->getSize(); ++i)
+    uint64_t shift = 0;
+
+    if(type == WorkType::ENCRYPT)
+        m_pOutputFile->writeLongLong(m_pInputFile->getSize());
+    else
+        shift = sizeof(uint64_t);
+
+    while((*m_pKey.*hasIndex)())
     {
-        index = (*m_pKey.*getIndexFunc)(i);
-        byte = m_pInputFile->readByte(index);
+        index = (*m_pKey.*nextIndex)();
+        byte = index != uint64_t(-1) ?  m_pInputFile->readByte(index + shift) : char(rand() % 100 + 48);
         m_pOutputFile->writeByte(byte);
     }
 
@@ -91,9 +97,15 @@ void TranspositionCipher::closeFiles()
     }
 }
 
-void TranspositionCipher::initKey(const char *keyString)
+void TranspositionCipher::initKey(const char *keyString, WorkType type)
 {
-    m_pKey = new CryptKey(m_pInputFile->getSize(), keyString);
+    uint64_t baseFileLength;
+    if(type == WorkType::ENCRYPT)
+        baseFileLength = m_pInputFile->getSize();
+    else
+        baseFileLength = m_pInputFile->readLongLong();
+
+    m_pKey = new CryptKey(baseFileLength, keyString);
 }
 
 void TranspositionCipher::freeKey()
@@ -102,19 +114,4 @@ void TranspositionCipher::freeKey()
     {
         delete m_pKey;
     }
-}
-
-void TranspositionCipher::printKey(const uint64_t *key, uint64_t length)
-{
-    for(int i = 0; i < length; ++i)
-        printf("%d ", key[i]);
-    printf("\n");
-}
-
-void TranspositionCipher::showKey() const
-{
-    printKey(m_pKey->getRowKey(), m_pKey->getRowKeyLength());
-    printKey(m_pKey->getColKey(), m_pKey->getColKeyLength());
-    printKey(m_pKey->getRowDecryptKey(), m_pKey->getRowKeyLength());
-    printKey(m_pKey->getColDecryptKey(), m_pKey->getColKeyLength());
 }

@@ -28,8 +28,11 @@ public:
     void close();
 
     char readByte();
-    char readByte(uint64_t pos);
+    char readByte(uint64_t pos);    
     void writeByte(char byte);
+
+    int64_t readLongLong();
+    void writeLongLong(int64_t n);
 
     uint64_t getSize();
 

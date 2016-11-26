@@ -4,9 +4,14 @@
 #include <cmath>
 #include <random>
 
-CryptKey::CryptKey(uint64_t fileLength, const char *seedString)
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+CryptKey::CryptKey(uint64_t baseFileLength, const char *seedString)
+    : m_fileLength(baseFileLength)
 {
-    calculateKeyLength(fileLength);
+    resetEncryptIndex();
+    resetDencryptIndex();
+    calculateKeyLength();
     allocateKeys();
     initKeys();
     mixKeys(seedString);
@@ -16,6 +21,29 @@ CryptKey::CryptKey(uint64_t fileLength, const char *seedString)
 CryptKey::~CryptKey()
 {
     freeKeys();
+}
+
+uint64_t CryptKey::hasNextEncryptIndex() const
+{
+    return MAX(m_cryptSeqLength - m_currentEncryptIndex, 0);
+}
+
+uint64_t CryptKey::hasNextDecryptIndex() const
+{
+    return MAX(m_fileLength - m_currentDecryptIndex, 0);
+}
+
+uint64_t CryptKey::nextEncryptIndex()
+{
+    uint64_t index = getEncryptedIndex(m_currentEncryptIndex++);
+    if(index >= m_fileLength)
+        return uint64_t(-1);
+    return index;
+}
+
+uint64_t CryptKey::nextDecryptIndex()
+{
+    return getBaseIndex(m_currentDecryptIndex++);
 }
 
 uint64_t CryptKey::getEncryptedIndex(uint64_t baseIndex) const
@@ -38,14 +66,15 @@ uint64_t CryptKey::getIndex(uint64_t baseIndex,
     return row * numberRow + col;
 }
 
-void CryptKey::calculateKeyLength(uint64_t fileLength)
+void CryptKey::calculateKeyLength()
 {
-    m_rowKeyLength = m_colKeyLength = (uint64_t)std::sqrt(fileLength);
-    if(m_rowKeyLength * m_colKeyLength < fileLength)
+    m_rowKeyLength = m_colKeyLength = (uint64_t)std::sqrt(m_fileLength);
+    if(m_rowKeyLength * m_colKeyLength < m_fileLength)
     {
         m_rowKeyLength++;
         m_colKeyLength++;
     }
+    m_cryptSeqLength = m_rowKeyLength * m_colKeyLength;
 }
 
 void CryptKey::allocateKeys()
@@ -77,6 +106,9 @@ void CryptKey::initKeys()
 
 void CryptKey::mixKeys(const char *seedString)
 {
+    if(!(m_rowKeyLength || m_colKeyLength))
+        return;
+
     std::seed_seq seed(seedString, seedString + strlen(seedString));
     std::minstd_rand0 random(seed);
 
