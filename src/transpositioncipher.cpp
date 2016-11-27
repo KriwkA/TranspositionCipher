@@ -15,49 +15,16 @@ TranspositionCipher::TranspositionCipher()
 
 TranspositionCipher::~TranspositionCipher()
 {
-
-}
-
-void TranspositionCipher::work(TranspositionCipher::WorkType type, const char *keyString, const char *inFilePath, const char *outFilePath)
-{
-    openFiles(inFilePath, outFilePath);
-    initKey(keyString, type);
-
-    uint64_t (CryptKey::*hasIndex)() const;
-    uint64_t (CryptKey::*nextIndex)();
-
-    hasIndex = (type == WorkType::ENCRYPT ? &CryptKey::hasNextEncryptIndex : &CryptKey::hasNextDecryptIndex);
-    nextIndex = (type == WorkType::ENCRYPT ? &CryptKey::nextEncryptIndex : &CryptKey::nextDecryptIndex);
-
-    uint64_t index;
-    char byte;
-
-    uint64_t shift = 0;
-
-    if(type == WorkType::ENCRYPT)
-        m_pOutputFile->writeLongLong(m_pInputFile->getSize());
-    else
-        shift = sizeof(uint64_t);
-
-    while((*m_pKey.*hasIndex)())
-    {
-        index = (*m_pKey.*nextIndex)();
-        byte = index != uint64_t(-1) ?  m_pInputFile->readByte(index + shift) : char(rand() % 100 + 48);
-        m_pOutputFile->writeByte(byte);
-    }
-
-    freeKey();
     closeFiles();
+    freeKey();
 }
 
 void TranspositionCipher::encrypt(const char *keyString, const char *inFilePath, const char* outFilePath)
 {
-    work(WorkType::ENCRYPT, keyString, inFilePath, outFilePath);
 }
 
 void TranspositionCipher::decrypt(const char *keyString, const char *inFilePath, const char* outFilePath)
 {
-    work(WorkType::DECRYPT, keyString, inFilePath, outFilePath);
 }
 
 void TranspositionCipher::openFiles(const char *inFilePath, const char* outFilePath)
@@ -88,12 +55,14 @@ void TranspositionCipher::closeFiles()
     {
         m_pInputFile->close();
         delete m_pInputFile;
+        m_pInputFile = 0;
     }
 
     if(m_pOutputFile)
     {
         m_pOutputFile->close();
         delete m_pOutputFile;
+        m_pOutputFile = 0;
     }
 }
 
@@ -113,5 +82,6 @@ void TranspositionCipher::freeKey()
     if(m_pKey)
     {
         delete m_pKey;
+        m_pKey = 0;
     }
 }

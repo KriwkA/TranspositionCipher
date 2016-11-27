@@ -81,6 +81,37 @@ private:
         return testRes;
     }
 
+    void encryptTest(uint64_t length)
+    {
+        CryptKey key(length);
+        while(key.hasNextEncryptIndex())
+            key.nextEncryptIndex();
+    }
+
+    void encryptTest2(uint64_t length)
+    {
+        CryptKey key(length);
+        for(uint64_t i = 0; i < key.getCryptSeqLength(); ++i)
+            key.getEncryptedIndex(i);
+    }
+
+    void decryptTest(uint64_t length)
+    {
+        CryptKey key(length);
+        while(key.hasNextDecryptIndex())
+            key.nextDecryptIndex();
+    }
+
+    void decryptTest2(uint64_t length)
+    {
+        CryptKey key(length);
+        for(uint64_t i = 0; i < length; ++i)
+            key.getDecryptedIndex(i);
+    }
+
+
+
+
 private Q_SLOTS:
     void initTestCase(){}
     void cleanupTestCase(){}
@@ -109,12 +140,12 @@ private Q_SLOTS:
     void test22()     { QVERIFY(testWithRandKey(1231000)); }
     void test23()     { QVERIFY(testWithRandKey(1111000)); }
     void test24()     { QVERIFY(testWithRandKey(1004000)); }
-    void test25()     { QVERIFY(testWithRandKey(1001000)); }
+    void test25()     { QBENCHMARK { encryptTest(1024*1024*1024); } }
+    void test26()     { QBENCHMARK { encryptTest2(1024*1024*1024); } }
+    void test27()     { QBENCHMARK { decryptTest(1024*1024*1024); } }
+    void test28()     { QBENCHMARK { decryptTest2(1024*1024*1024); } }
 
 };
-
-
-
 
 QTEST_APPLESS_MAIN(CryptKeyTestTest)
 

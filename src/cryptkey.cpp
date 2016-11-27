@@ -1,6 +1,4 @@
 #include "cryptkey.h"
-#include <algorithm>
-#include <string>
 #include <cmath>
 #include <random>
 
@@ -35,35 +33,32 @@ uint64_t CryptKey::hasNextDecryptIndex() const
 
 uint64_t CryptKey::nextEncryptIndex()
 {
-    uint64_t index = getEncryptedIndex(m_currentEncryptIndex++);
-    if(index >= m_fileLength)
-        return uint64_t(-1);
-    return index;
+    return getEncryptedIndex(m_currentEncryptIndex++);
 }
 
 uint64_t CryptKey::nextDecryptIndex()
 {
-    return getBaseIndex(m_currentDecryptIndex++);
+    return getDecryptedIndex(m_currentDecryptIndex++);
 }
 
-uint64_t CryptKey::getEncryptedIndex(uint64_t baseIndex) const
+uint64_t CryptKey::getEncryptedIndex(const uint64_t& baseIndex) const
 {
-    return getIndex(baseIndex, m_rowKeyLength, m_colKeyLength, m_pRowKey, m_pColKey);
+    return getEncryptedIndex(baseIndex / m_colKeyLength, baseIndex % m_colKeyLength);
 }
 
-uint64_t CryptKey::getBaseIndex(uint64_t encryptedIndex) const
+uint64_t CryptKey::getDecryptedIndex(const uint64_t& encryptedIndex) const
 {
-    return getIndex(encryptedIndex, m_rowKeyLength, m_colKeyLength, m_pRowDecryptKey, m_pColDecryptKey);
+    return getDecryptedIndex(encryptedIndex / m_colKeyLength, encryptedIndex % m_colKeyLength);
 }
 
-uint64_t CryptKey::getIndex(uint64_t baseIndex,
-                            uint64_t numberRow, uint64_t numberCol,
-                            const uint64_t *rowArr,
-                            const uint64_t *colArr)
+uint64_t CryptKey::getEncryptedIndex(uint64_t row, uint64_t col) const
 {
-    uint64_t row = rowArr[baseIndex / numberRow];
-    uint64_t col = colArr[baseIndex % numberCol];
-    return row * numberRow + col;
+    return m_pRowKey[row] * m_colKeyLength + m_pColKey[col];
+}
+
+uint64_t CryptKey::getDecryptedIndex(uint64_t row, uint64_t col) const
+{
+    return m_pRowDecryptKey[row] * m_colKeyLength + m_pColDecryptKey[col];
 }
 
 void CryptKey::calculateKeyLength()
@@ -101,7 +96,6 @@ void CryptKey::initKeys()
 
     for(uint64_t i = 0; i < m_colKeyLength; ++i)
         m_pColKey[i] = i;
-
 }
 
 void CryptKey::mixKeys(const char *seedString)

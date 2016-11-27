@@ -67,17 +67,6 @@ void FileTestTest::readWriteFileTest()
             QCOMPARE(i, (int)letter - (int)'0');
         }
 
-
-        try
-        {
-            letter = file.readByte(10);
-            QFAIL("no read bad byte exception");
-        }
-        catch(const std::exception& e)
-        {
-            Q_UNUSED(e);
-        }
-
     }
     catch(const std::exception& e)
     {

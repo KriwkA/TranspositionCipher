@@ -10,8 +10,9 @@ File::File()
     : m_path(0)
     , m_size((uint64_t)-1)
     , m_pStream(0)
+    , m_bufferSize(4096 * 4)
 {
-
+    m_pBuffer = (char*)malloc(m_bufferSize);
 }
 
 File::File(const char *filePath)
@@ -23,6 +24,7 @@ File::File(const char *filePath)
 File::~File()
 {
     clearPath();
+    free(m_pBuffer);
 }
 
 
@@ -66,6 +68,8 @@ void File::open(File::OpenMode openMode)
     if(!m_pStream)
         throw std::exception("file not found");
 
+    setvbuf(m_pStream, m_pBuffer, _IOFBF, m_bufferSize);
+
     checkSize();
 }
 
@@ -85,32 +89,40 @@ void File::close()
     }
 }
 
+void File::seek(uint64_t pos)
+{
+    _fseeki64(m_pStream, pos, SEEK_SET);
+}
+
+uint64_t File::read(char *buffer, uint64_t length)
+{
+    return fread(buffer, 1, length, m_pStream);
+}
+
+uint64_t File::read(char *buffer, uint64_t length, uint64_t from)
+{
+    this->seek(from);
+    return read(buffer, length);
+}
+
 char File::readByte()
 {
-    if(!m_pStream)
-        throw std::exception("file read error");
-    return this->getch();
+    return fgetc(m_pStream);
 }
 
 char File::readByte(uint64_t pos)
 {
-    if(!m_pStream || pos >= m_size || _fseeki64(m_pStream, pos, SEEK_SET))
-        throw std::exception("file read error");
-    return this->getch();
+    this->seek(pos);
+    return fgetc(m_pStream);
 }
 
 void File::writeByte(char byte)
 {
-    if(!m_pStream)
-        throw std::exception("file write error");
     fwrite(&byte, sizeof(char), 1, m_pStream);
 }
 
 int64_t File::readLongLong()
 {
-    if(!m_pStream)
-        throw std::exception("file read error");
-
     int64_t n;
     fread(&n, sizeof(int64_t), 1, m_pStream);
     return n;
@@ -118,9 +130,14 @@ int64_t File::readLongLong()
 
 void File::writeLongLong(int64_t n)
 {
-    if(!m_pStream)
-        throw std::exception("file write error");
     fwrite(&n, sizeof(int64_t), 1, m_pStream);
+}
+
+void File::flush()
+{
+    if(!m_pStream)
+        throw std::exception("file flush error");
+    fflush(m_pStream);
 }
 
 void File::checkSize()
@@ -133,14 +150,6 @@ void File::checkSize()
         m_size = _ftelli64(m_pStream);
         _fseeki64(m_pStream, currentPos, SEEK_SET);
     }
-}
-
-char File::getch()
-{
-    char letter = fgetc(m_pStream);
-    if(feof(m_pStream))
-        throw std::exception("file read error");
-    return letter;
 }
 
 uint64_t File::getSize()

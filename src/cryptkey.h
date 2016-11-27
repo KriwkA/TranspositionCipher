@@ -9,6 +9,22 @@ public:
     explicit CryptKey(uint64_t baseFileLength, const char* seedString = "defaultSeed");
     virtual ~CryptKey();
 
+    inline uint64_t getCryptSeqLength() const { return m_cryptSeqLength; }
+    inline uint64_t getRowKeyLength() const { return m_rowKeyLength; }
+    inline uint64_t getColKeyLength() const { return m_colKeyLength; }
+
+    inline uint64_t rowKeyAt(uint64_t pos) const { return m_pRowKey[pos]; }
+    inline uint64_t colKeyAt(uint64_t pos) const { return m_pColKey[pos]; }
+
+    inline uint64_t rowDecryptKeyAt(uint64_t pos) const { return m_pRowDecryptKey[pos]; }
+    inline uint64_t colDecryptKeyAt(uint64_t pos) const { return m_pColDecryptKey[pos]; }
+
+    uint64_t getEncryptedIndex(const uint64_t& baseIndex) const;
+    uint64_t getDecryptedIndex(const uint64_t& encryptedIndex) const;
+
+    uint64_t getEncryptedIndex(uint64_t row, uint64_t col) const;
+    uint64_t getDecryptedIndex(uint64_t row, uint64_t col) const;
+
     uint64_t hasNextEncryptIndex() const;
     uint64_t hasNextDecryptIndex() const;
 
@@ -18,25 +34,7 @@ public:
     inline void resetEncryptIndex() { m_currentEncryptIndex = 0; }
     inline void resetDencryptIndex() { m_currentDecryptIndex = 0; }
 
-    inline uint64_t getCryptSeqLength() const { return m_cryptSeqLength; }
-
-
 private:
-    uint64_t m_currentEncryptIndex;
-    uint64_t m_currentDecryptIndex;
-
-
-private:
-
-    static uint64_t getIndex(uint64_t baseIndex,
-                             uint64_t numberRow, uint64_t numberCol,
-                             const uint64_t* rowArr,
-                             const uint64_t* colArr);
-
-
-    uint64_t getEncryptedIndex(uint64_t baseIndex) const;
-    uint64_t getBaseIndex(uint64_t encryptedIndex) const;
-
     void calculateKeyLength();
     void allocateKeys();
     void freeKeys();
@@ -44,7 +42,9 @@ private:
     void mixKeys(const char *seedString);
     void generateDecryptKeys();
 
-private:
+    uint64_t m_currentEncryptIndex;
+    uint64_t m_currentDecryptIndex;
+
     uint64_t m_fileLength;
 
     uint64_t* m_pRowKey;

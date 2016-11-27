@@ -27,12 +27,18 @@ public:
 
     void close();
 
+    void seek(uint64_t pos);
+
+    uint64_t read(char* buffer, uint64_t length);
+    uint64_t read(char *buffer, uint64_t length, uint64_t from);
     char readByte();
-    char readByte(uint64_t pos);    
+    char readByte(uint64_t pos);
     void writeByte(char byte);
 
     int64_t readLongLong();
     void writeLongLong(int64_t n);
+
+    void flush();
 
     uint64_t getSize();
 
@@ -43,13 +49,14 @@ public:
 private:
     void clearPath();
     void checkSize();
-    char getch();
 
 
 private:
     FILE* m_pStream;
     char* m_path;
     uint64_t m_size;
+    char* m_pBuffer;
+    size_t m_bufferSize;
 
 
 };
