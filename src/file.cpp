@@ -105,6 +105,11 @@ uint64_t File::read(char *buffer, uint64_t length, uint64_t from)
     return read(buffer, length);
 }
 
+uint64_t File::write(const char *data, uint64_t length)
+{
+    return fwrite(data, 1, length, m_pStream);
+}
+
 char File::readByte()
 {
     return fgetc(m_pStream);

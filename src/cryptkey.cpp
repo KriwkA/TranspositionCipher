@@ -61,6 +61,16 @@ uint64_t CryptKey::getDecryptedIndex(uint64_t row, uint64_t col) const
     return m_pRowDecryptKey[row] * m_colKeyLength + m_pColDecryptKey[col];
 }
 
+uint64_t CryptKey::getEncryptedRowIndex(uint64_t row) const
+{
+    return m_pRowKey[row] * m_colKeyLength;
+}
+
+uint64_t CryptKey::getDecryptedRowIndex(uint64_t row) const
+{
+    return m_pRowDecryptKey[row] * m_colKeyLength;
+}
+
 void CryptKey::calculateKeyLength()
 {
     m_rowKeyLength = m_colKeyLength = (uint64_t)std::sqrt(m_fileLength);

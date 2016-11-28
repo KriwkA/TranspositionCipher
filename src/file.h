@@ -31,6 +31,9 @@ public:
 
     uint64_t read(char* buffer, uint64_t length);
     uint64_t read(char *buffer, uint64_t length, uint64_t from);
+
+    uint64_t write(const char* data, uint64_t length);
+
     char readByte();
     char readByte(uint64_t pos);
     void writeByte(char byte);

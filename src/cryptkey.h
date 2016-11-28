@@ -25,6 +25,9 @@ public:
     uint64_t getEncryptedIndex(uint64_t row, uint64_t col) const;
     uint64_t getDecryptedIndex(uint64_t row, uint64_t col) const;
 
+    uint64_t getEncryptedRowIndex(uint64_t row) const;
+    uint64_t getDecryptedRowIndex(uint64_t row) const;
+
     uint64_t hasNextEncryptIndex() const;
     uint64_t hasNextDecryptIndex() const;
 

@@ -9,6 +9,7 @@
 TranspositionCipher::TranspositionCipher()
     : AbstractCipher()
     , m_pKey(0)
+    , m_bIsWorking(false)
 {
 
 }
@@ -21,10 +22,75 @@ TranspositionCipher::~TranspositionCipher()
 
 void TranspositionCipher::encrypt(const char *keyString, const char *inFilePath, const char* outFilePath)
 {
+    if(m_bIsWorking)
+        return;
+    m_bIsWorking = true;
+    openFiles(inFilePath, outFilePath);
+    initKey(keyString, m_pInputFile->getSize());
+    m_pOutputFile->writeLongLong(m_pInputFile->getSize());
+
+    const uint64_t bufLength = m_pKey->getColKeyLength();
+    const uint64_t rowCount = m_pKey->getRowKeyLength();
+
+    char* inBuf = (char*)malloc(bufLength);
+    char* outBuf = (char*)malloc(bufLength);
+
+    for(uint64_t index, i = 0; m_bIsWorking && i < rowCount; ++i)
+    {
+        index = m_pKey->getEncryptedRowIndex(i);
+        m_pInputFile->read(inBuf, bufLength, index);
+        for(uint64_t i = 0; i < bufLength; ++i)
+            outBuf[i] = inBuf[m_pKey->colKeyAt(i)];
+        m_pOutputFile->write(outBuf, bufLength);
+        setProgress((double)i / (double)rowCount);
+    }
+
+    free(inBuf);
+    free(outBuf);
+    freeKey();
+    closeFiles();
+    m_bIsWorking = false;
 }
 
 void TranspositionCipher::decrypt(const char *keyString, const char *inFilePath, const char* outFilePath)
 {
+    if(m_bIsWorking)
+        return;
+    m_bIsWorking = true;
+    openFiles(inFilePath, outFilePath);
+    const uint64_t outLength = m_pInputFile->readLongLong();
+    initKey(keyString, outLength);
+
+    const uint64_t bufLength = m_pKey->getColKeyLength();
+    const uint64_t rowCount = outLength / bufLength + (outLength % bufLength ? 1 : 0);
+    uint64_t lastChunkSize = outLength % bufLength;
+    if(!lastChunkSize)
+        lastChunkSize = bufLength;
+
+
+    char* inBuf = (char*)malloc(bufLength);
+    char* outBuf = (char*)malloc(bufLength);
+
+    const uint64_t indexShift = sizeof(uint64_t);
+
+    uint64_t cryptLength;
+
+    for(uint64_t index, i = 0; m_bIsWorking && i < rowCount; ++i)
+    {
+        index = m_pKey->getDecryptedRowIndex(i);
+        m_pInputFile->read(inBuf, bufLength, index + indexShift);
+        cryptLength = (i != rowCount - 1) ? bufLength : lastChunkSize;
+        for(uint64_t i = 0; i < cryptLength; ++i)
+            outBuf[i] = inBuf[m_pKey->colDecryptKeyAt(i)];
+        m_pOutputFile->write(outBuf, cryptLength);
+        setProgress((double)i / (double)rowCount);
+    }
+
+    free(inBuf);
+    free(outBuf);
+    freeKey();
+    closeFiles();
+    m_bIsWorking = false;
 }
 
 void TranspositionCipher::openFiles(const char *inFilePath, const char* outFilePath)
@@ -66,15 +132,9 @@ void TranspositionCipher::closeFiles()
     }
 }
 
-void TranspositionCipher::initKey(const char *keyString, WorkType type)
-{
-    uint64_t baseFileLength;
-    if(type == WorkType::ENCRYPT)
-        baseFileLength = m_pInputFile->getSize();
-    else
-        baseFileLength = m_pInputFile->readLongLong();
-
-    m_pKey = new CryptKey(baseFileLength, keyString);
+void TranspositionCipher::initKey(const char *keyString, uint64_t fileLength)
+{   
+    m_pKey = new CryptKey(fileLength, keyString);
 }
 
 void TranspositionCipher::freeKey()
