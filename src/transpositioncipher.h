@@ -16,7 +16,7 @@ public:
     virtual void encrypt(const char *keyString, const char *inFilePath, const char* outFilePath);
     virtual void decrypt(const char *keyString, const char *inFilePath, const char* outFilePath);
 
-    inline void stop() { m_bIsWorking = false; }
+    inline virtual void stop() override { m_bIsWorking = false; }
 
 private:
     void openFiles(const char *inFilePath, const char* outFilePath);

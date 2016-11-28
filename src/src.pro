@@ -8,14 +8,17 @@ SOURCES += main.cpp \
     file.cpp \
     transpositioncipher.cpp \
     abstractcipher.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    cipherdialog.cpp
 
 HEADERS += \
     cryptkey.h \
     file.h \
     transpositioncipher.h \
     abstractcipher.h \
-    mainwindow.h
+    mainwindow.h \
+    cipherdialog.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    cipherdialog.ui

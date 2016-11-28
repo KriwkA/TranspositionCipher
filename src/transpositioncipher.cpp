@@ -49,6 +49,8 @@ void TranspositionCipher::encrypt(const char *keyString, const char *inFilePath,
     free(outBuf);
     freeKey();
     closeFiles();
+
+    setProgress(1.0);
     m_bIsWorking = false;
 }
 
@@ -90,6 +92,7 @@ void TranspositionCipher::decrypt(const char *keyString, const char *inFilePath,
     free(outBuf);
     freeKey();
     closeFiles();
+    setProgress(1.0);
     m_bIsWorking = false;
 }
 

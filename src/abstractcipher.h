@@ -13,6 +13,7 @@ public:
     virtual void decrypt(const char *keyString, const char *inFilePath, const char* outFilePath) = 0;
 
     inline double getProgress() const { return m_progress; }
+    virtual void stop() = 0;
 
 protected:
     inline void setProgress(double value) { m_progress = value; }
