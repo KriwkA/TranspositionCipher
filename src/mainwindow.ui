@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>354</width>
-    <height>210</height>
+    <height>188</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,11 @@
      </widget>
     </item>
     <item row="5" column="0" colspan="2">
-     <widget class="QLineEdit" name="cryptKey"/>
+     <widget class="QLineEdit" name="cryptKey">
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+     </widget>
     </item>
     <item row="3" column="0">
      <widget class="QLineEdit" name="outputFilePath"/>
@@ -99,7 +103,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
   <tabstop>openInputFile</tabstop>
