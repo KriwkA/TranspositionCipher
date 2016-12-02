@@ -26,6 +26,10 @@ private slots:
     void on_inputFilePath_textChanged(const QString &arg1);
     void on_outputFilePath_textChanged(const QString &arg1);
 
+    void on_openInputFile_clicked();
+
+    void on_openOutputFile_clicked();
+
 private:
 
     void checkReadyToWork();

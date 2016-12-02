@@ -3,6 +3,8 @@
 
 #include "transpositioncipher.h"
 
+#include <QFileDialog>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -62,7 +64,6 @@ void MainWindow::checkReadyToWork()
     }
 }
 
-
 void MainWindow::on_cryptKey_textChanged(const QString &text)
 {
     checkReadyToWork();
@@ -76,4 +77,16 @@ void MainWindow::on_inputFilePath_textChanged(const QString &arg1)
 void MainWindow::on_outputFilePath_textChanged(const QString &arg1)
 {
     checkReadyToWork();
+}
+
+void MainWindow::on_openInputFile_clicked()
+{
+    QString path = QFileDialog::getOpenFileName(this, "Select file to encrypt/decrypt", QDir::currentPath());
+    ui->inputFilePath->setText(path);
+}
+
+void MainWindow::on_openOutputFile_clicked()
+{
+    QString path = QFileDialog::getSaveFileName(this, "Select out file path", QDir::currentPath());
+    ui->outputFilePath->setText(path);
 }
