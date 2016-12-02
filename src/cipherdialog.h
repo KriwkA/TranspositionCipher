@@ -37,12 +37,16 @@ private slots:
     void onDone();
 
     void on_cancel_clicked();
+    void showError(const QString& error);
 
 private:
     virtual void timerEvent(QTimerEvent *event) override;
 
+    void work(Type type, const CryptInfo& cryptInfo);
     void encrypt(const CryptInfo& cryptInfo);
     void decrypt(const CryptInfo& cryptInfo);
+
+
 
     Ui::CipherDialog *ui;
     AbstractCipher* m_cipher;

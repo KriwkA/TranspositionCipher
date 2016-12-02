@@ -29,6 +29,7 @@ void MainWindow::on_decrypt_clicked()
                                             CipherDialog::Type::Decrypt,
                                             getCryptInfo(), this);
     cipher->show();
+    cipher->exec();
 }
 
 CipherDialog::CryptInfo MainWindow::getCryptInfo() const
