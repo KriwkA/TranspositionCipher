@@ -13,6 +13,7 @@ CipherDialog::CipherDialog(AbstractCipher *cipher, CipherDialog::Type type, cons
 {
     ui->setupUi(this);
 
+    setWindowTitle("Chiper");
     setWindowFlags(windowFlags() ^ (Qt::WindowContextHelpButtonHint | Qt::WindowCloseButtonHint));
     setAttribute(Qt::WA_DeleteOnClose, true);
     setModal(true);
