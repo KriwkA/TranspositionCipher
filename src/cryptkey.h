@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
 class CryptKey
 {
 public:
@@ -22,14 +24,14 @@ public:
     uint64_t getEncryptedIndex(const uint64_t& baseIndex) const;
     uint64_t getDecryptedIndex(const uint64_t& encryptedIndex) const;
 
-    uint64_t getEncryptedIndex(uint64_t row, uint64_t col) const;
-    uint64_t getDecryptedIndex(uint64_t row, uint64_t col) const;
+    inline uint64_t getEncryptedIndex(uint64_t row, uint64_t col) const { return m_pRowKey[row] * m_colKeyLength + m_pColKey[col]; }
+    inline uint64_t getDecryptedIndex(uint64_t row, uint64_t col) const { return m_pRowDecryptKey[row] * m_colKeyLength + m_pColDecryptKey[col]; }
 
-    uint64_t getEncryptedRowIndex(uint64_t row) const;
-    uint64_t getDecryptedRowIndex(uint64_t row) const;
+    inline uint64_t getEncryptedRowIndex(uint64_t row) const { return m_pRowKey[row] * m_colKeyLength; }
+    inline uint64_t getDecryptedRowIndex(uint64_t row) const { return m_pRowDecryptKey[row] * m_colKeyLength; }
 
-    uint64_t hasNextEncryptIndex() const;
-    uint64_t hasNextDecryptIndex() const;
+    inline uint64_t hasNextEncryptIndex() const { return MAX(m_cryptSeqLength - m_currentEncryptIndex, 0); }
+    inline uint64_t hasNextDecryptIndex() const { return MAX(m_fileLength - m_currentDecryptIndex, 0); }
 
     uint64_t nextEncryptIndex();
     uint64_t nextDecryptIndex();

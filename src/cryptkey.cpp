@@ -2,7 +2,7 @@
 #include <cmath>
 #include <random>
 
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
 
 CryptKey::CryptKey(uint64_t baseFileLength, const char *seedString)
     : m_fileLength(baseFileLength)
@@ -19,16 +19,6 @@ CryptKey::CryptKey(uint64_t baseFileLength, const char *seedString)
 CryptKey::~CryptKey()
 {
     freeKeys();
-}
-
-uint64_t CryptKey::hasNextEncryptIndex() const
-{
-    return MAX(m_cryptSeqLength - m_currentEncryptIndex, 0);
-}
-
-uint64_t CryptKey::hasNextDecryptIndex() const
-{
-    return MAX(m_fileLength - m_currentDecryptIndex, 0);
 }
 
 uint64_t CryptKey::nextEncryptIndex()
@@ -49,26 +39,6 @@ uint64_t CryptKey::getEncryptedIndex(const uint64_t& baseIndex) const
 uint64_t CryptKey::getDecryptedIndex(const uint64_t& encryptedIndex) const
 {
     return getDecryptedIndex(encryptedIndex / m_colKeyLength, encryptedIndex % m_colKeyLength);
-}
-
-uint64_t CryptKey::getEncryptedIndex(uint64_t row, uint64_t col) const
-{
-    return m_pRowKey[row] * m_colKeyLength + m_pColKey[col];
-}
-
-uint64_t CryptKey::getDecryptedIndex(uint64_t row, uint64_t col) const
-{
-    return m_pRowDecryptKey[row] * m_colKeyLength + m_pColDecryptKey[col];
-}
-
-uint64_t CryptKey::getEncryptedRowIndex(uint64_t row) const
-{
-    return m_pRowKey[row] * m_colKeyLength;
-}
-
-uint64_t CryptKey::getDecryptedRowIndex(uint64_t row) const
-{
-    return m_pRowDecryptKey[row] * m_colKeyLength;
 }
 
 void CryptKey::calculateKeyLength()
