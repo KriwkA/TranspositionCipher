@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    onSetEnableWorkButtons(false);
+    setEnableWorkButtons(false);
 }
 
 MainWindow::~MainWindow()
@@ -44,7 +44,7 @@ CipherDialog::CryptInfo MainWindow::getCryptInfo() const
     return info;
 }
 
-void MainWindow::onSetEnableWorkButtons(bool enable)
+void MainWindow::setEnableWorkButtons(bool enable)
 {
     ui->encrypt->setEnabled(enable);
     ui->decrypt->setEnabled(enable);
@@ -56,11 +56,11 @@ void MainWindow::checkReadyToWork()
         ui->inputFilePath->text().isEmpty() ||
         ui->outputFilePath->text().isEmpty() )
     {
-        onSetEnableWorkButtons(false);
+        setEnableWorkButtons(false);
     }
     else
     {
-        onSetEnableWorkButtons(true);
+        setEnableWorkButtons(true);
     }
 }
 

@@ -21,17 +21,13 @@ private slots:
     void on_encrypt_clicked();
     void on_decrypt_clicked();
     void on_cryptKey_textChanged(const QString& text);
-
-    void onSetEnableWorkButtons(bool enable);
     void on_inputFilePath_textChanged(const QString &arg1);
     void on_outputFilePath_textChanged(const QString &arg1);
-
     void on_openInputFile_clicked();
-
     void on_openOutputFile_clicked();
 
 private:
-
+    void setEnableWorkButtons(bool enable);
     void checkReadyToWork();
 
     void startCipher(CipherDialog::Type type);
