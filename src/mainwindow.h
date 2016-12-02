@@ -15,15 +15,22 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    virtual ~MainWindow();
 
 private slots:
     void on_encrypt_clicked();
     void on_decrypt_clicked();
-    void on_cryptKey_textChanged(const QString &arg1);
+    void on_cryptKey_textChanged(const QString& text);
+
+    void onSetEnableWorkButtons(bool enable);
+    void on_inputFilePath_textChanged(const QString &arg1);
+    void on_outputFilePath_textChanged(const QString &arg1);
 
 private:
 
+    void checkReadyToWork();
+
+    void startCipher(CipherDialog::Type type);
     CipherDialog::CryptInfo getCryptInfo() const;
 
     Ui::MainWindow *ui;

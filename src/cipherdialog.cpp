@@ -2,12 +2,10 @@
 #include "ui_cipherdialog.h"
 
 #include "abstractcipher.h"
-
 #include <thread>
-
 #include <QMessageBox>
 
-CipherDialog::CipherDialog(AbstractCipher *cipher, Type type, const CryptInfo &info, QWidget *parent, bool autoDelCipher)
+CipherDialog::CipherDialog(AbstractCipher *cipher, CipherDialog::Type type, const CryptInfo &info, QWidget *parent, bool autoDelCipher)
     : QDialog(parent)
     , ui(new Ui::CipherDialog)
     , m_cipher(cipher)
@@ -15,14 +13,13 @@ CipherDialog::CipherDialog(AbstractCipher *cipher, Type type, const CryptInfo &i
 {
     ui->setupUi(this);
 
+    setWindowFlags(windowFlags() ^ (Qt::WindowContextHelpButtonHint | Qt::WindowCloseButtonHint));
     setAttribute(Qt::WA_DeleteOnClose, true);
-
-    connect(this, SIGNAL(done()),
-            this, SLOT(onDone()));
+    setModal(true);
 
     m_pWorkThread = new std::thread(&CipherDialog::work, this, type, info);
 
-    m_checkProgressTimerId = startTimer(13);
+    m_checkProgressTimerId = startTimer(13);    
 }
 
 CipherDialog::~CipherDialog()
@@ -39,8 +36,12 @@ CipherDialog::~CipherDialog()
     delete ui;
 }
 
-void CipherDialog::onDone()
+void CipherDialog::onDone(bool ok)
 {
+    if(ok)
+        ui->progress->setFormat("Done");
+    else
+        ui->progress->setFormat("Error");
     killTimer(m_checkProgressTimerId);
     ui->cancel->setText("Close");
 }
@@ -54,7 +55,7 @@ void CipherDialog::timerEvent(QTimerEvent *event)
         double progress = m_cipher->getProgress();
         ui->progress->setValue(progress * 100);
         if(progress == 1.0)
-            emit done();       
+            onDone(true);
     }
 }
 
@@ -96,7 +97,7 @@ void CipherDialog::showError(const QString &errorString)
     error->setText(errorString);
     error->show();
     error->exec();
-    emit done();
+    onDone(false);
 }
 
 void CipherDialog::on_cancel_clicked()

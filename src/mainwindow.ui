@@ -84,14 +84,14 @@
       <item>
        <widget class="QPushButton" name="encrypt">
         <property name="text">
-         <string>Encrypt</string>
+         <string>&amp;Encrypt</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="decrypt">
         <property name="text">
-         <string>Decrypt</string>
+         <string>&amp;Decrypt</string>
         </property>
        </widget>
       </item>
@@ -101,6 +101,15 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>openInputFile</tabstop>
+  <tabstop>openOutputFile</tabstop>
+  <tabstop>inputFilePath</tabstop>
+  <tabstop>outputFilePath</tabstop>
+  <tabstop>cryptKey</tabstop>
+  <tabstop>encrypt</tabstop>
+  <tabstop>decrypt</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
