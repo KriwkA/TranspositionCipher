@@ -90,3 +90,11 @@ void MainWindow::on_openOutputFile_clicked()
     QString path = QFileDialog::getSaveFileName(this, "Select out file path", QDir::currentPath());
     ui->outputFilePath->setText(path);
 }
+
+void MainWindow::on_showPassword_clicked(bool checked)
+{
+    if (checked)
+        ui->cryptKey->setEchoMode(QLineEdit::Normal);
+    else
+        ui->cryptKey->setEchoMode(QLineEdit::Password);
+}
