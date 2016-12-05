@@ -26,6 +26,8 @@ private slots:
     void on_openInputFile_clicked();
     void on_openOutputFile_clicked();
 
+    void on_showPassword_clicked(bool checked);
+
 private:
     void setEnableWorkButtons(bool enable);
     void checkReadyToWork();
